@@ -106,17 +106,17 @@ class AppState {
 
     constructor() {
         // TODO :get real data from a real DB
-        this.images = Object.assign({}, tilesData);
-        this.imagesShown = Object.assign({}, tilesData);
+        this.images = tilesData.slice();
+        this.imagesShown = tilesData.slice();
     }
 
     removeTagFromImage(tagId, imgId) {
 
 
-        Object.keys(this.images).map((k) => {
+        this.images.map((img) => {
 
-            if (this.images[k].id === imgId) {
-                this.images[k].tags = this.images[k].tags.filter(function(tg, index) {
+            if (img.id === imgId) {
+                img.tags = img.tags.filter(function(tg, index) {
                     return tg.index != tagId;
                 });
             }
@@ -125,11 +125,11 @@ class AppState {
 
     addTagToImage(tagText, imgId) {
 
-        Object.keys(this.images).map((k) => {
+        this.images.map((img) => {
 
-            if (this.images[k].id === imgId) {
-                this.images[k].tags.push({
-                    index: this.images[k].tags.length + 1,
+            if (img.id === imgId) {
+                img.tags.push({
+                    index: img.tags.length + 1,
                     value: tagText
                 });
             }
@@ -140,12 +140,25 @@ class AppState {
 
     filterPhotos(searchtText) {
 
-        this.imagesShown = Object.keys(this.images)
-            .filter(key => this.images[key].title.toLowerCase().indexOf(searchtText.toLowerCase()) > -1)
-            .reduce((obj, key) => {
-                obj[key] = this.images[key];
-                return obj;
-            }, {});
+        this.imagesShown = this.images.filter(img => {
+            let matchAnything = false;
+
+            if (
+                (img.title.toLowerCase().indexOf(searchtText.toLowerCase()) > -1) ||
+                (img.place.toLowerCase().indexOf(searchtText.toLowerCase()) > -1) ||
+                (img.author.toLowerCase().indexOf(searchtText.toLowerCase()) > -1)
+            ) {
+                return true;
+            }
+
+            for (var i = img.tags.length - 1; i >= 0; i--) {
+                if (img.tags[i].value.toLowerCase().indexOf(searchtText.toLowerCase()) > -1) {
+                    return true;
+                }
+            }
+
+            return false;
+        })
 
     }
 }

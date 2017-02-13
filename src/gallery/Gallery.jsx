@@ -5,6 +5,7 @@ import PhotoCard from './PhotoCard.jsx';
 import { GridList, GridTile } from 'material-ui/GridList';
 import { observer } from 'mobx-react';
 
+
 const styles = {
     root: {
         display: 'flex',
@@ -36,13 +37,13 @@ class Gallery extends Component {
       cellHeight={250}
       style={styles.gridList}
     > 
-      {Object.keys(this.props.route.appState.imagesShown).map((key,index) => (
+      {this.props.route.appState.imagesShown.map((image,index) => (
         <GridTile
           key={index}
-          title={this.props.route.appState.imagesShown[key].title}
-          subtitle={<span>by <b>{this.props.route.appState.imagesShown[key].author}</b></span>}
+          title={image.title}
+          subtitle={<span>by <b>{image.author}</b></span>}
         >
-         <PhotoCard photoData={this.props.route.appState.imagesShown[key]}/> 
+         <PhotoCard photoData={image}/> 
         </GridTile>
       ))}
     </GridList>
